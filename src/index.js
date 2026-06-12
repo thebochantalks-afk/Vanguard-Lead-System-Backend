@@ -28,11 +28,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Auth middleware (skipped for webhook routes)
-app.use(authMiddleware);
-
 // ============================================================================
-// Health Check
+// Health Check (public — no auth needed)
 // ============================================================================
 
 app.get('/health', (req, res) => {
@@ -43,6 +40,9 @@ app.get('/health', (req, res) => {
     version: '1.0.0',
   });
 });
+
+// Auth middleware (skipped for webhook routes + health)
+app.use(authMiddleware);
 
 // ============================================================================
 // Routes
