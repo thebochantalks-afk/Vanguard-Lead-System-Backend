@@ -9,7 +9,11 @@ const router = Router();
  */
 router.post('/', async (req, res) => {
   try {
-    const { name, business_name, whatsapp_number, industry, qualifying_question, calendly_link } = req.body;
+    const { 
+      name, business_name, whatsapp_number, industry, 
+      qualifying_question, calendly_link, email, password,
+      plan, amount 
+    } = req.body;
 
     // Validate required fields
     if (!name || !name.trim()) {
@@ -21,6 +25,15 @@ router.post('/', async (req, res) => {
 
     const cleanPhone = whatsapp_number.replace(/^whatsapp[:\+]?/i, '').trim();
 
+    // Set subscription defaults
+    const clientPlan = plan || 'starter';
+    const planAmount = amount || (clientPlan === 'starter' ? 5000 : clientPlan === 'growth' ? 12000 : 25000);
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + 1); // 1 month subscription
+
+    const clientPassword = password || Math.random().toString(36).slice(-8); // random 8 char default
+
     const { data: client, error } = await supabase
       .from('clients')
       .insert({
@@ -30,6 +43,15 @@ router.post('/', async (req, res) => {
         industry: industry || 'other',
         qualifying_question: qualifying_question || 'What made you interested in our services today?',
         calendly_link: calendly_link || null,
+        email: email || null,
+        password: clientPassword,
+        plan: clientPlan,
+        amount: planAmount,
+        subscription_start: startDate.toISOString(),
+        subscription_end: endDate.toISOString(),
+        subscription_status: 'active',
+        payment_status: 'paid',
+        last_payment_date: startDate.toISOString(),
       })
       .select()
       .single();
@@ -39,7 +61,13 @@ router.post('/', async (req, res) => {
       return res.status(500).json({ error: 'Failed to create client' });
     }
 
-    return res.status(201).json(client);
+    return res.status(201).json({
+      ...client,
+      password: undefined, // Don't send password back
+      login_url: `${process.env.FRONTEND_URL || 'https://vanguard-lead-system-frontend.vercel.app'}/login`,
+      login_email: email || `${name.toLowerCase().replace(/\s+/g, '.')}@client.com`,
+      login_password: clientPassword,
+    });
   } catch (err) {
     console.error('Client create error:', err.message);
     return res.status(500).json({ error: 'Internal server error' });

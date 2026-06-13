@@ -1,10 +1,11 @@
 -- Vanguard Growth Backend - PostgreSQL Schema
+-- Run the FULL schema below, then run the ALTER statements
 
 -- Enable uuid-ossp extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================================================
--- CLIENTS TABLE
+-- CLIENTS TABLE (includes agency management fields)
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS clients (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -14,6 +15,19 @@ CREATE TABLE IF NOT EXISTS clients (
     industry        VARCHAR(100) NOT NULL DEFAULT 'other',
     qualifying_question TEXT NOT NULL DEFAULT 'What made you interested in our services today?',
     calendly_link   TEXT,
+    
+    -- Agency management fields
+    email           VARCHAR(255),
+    password        VARCHAR(255) DEFAULT 'client123',
+    plan            VARCHAR(50) DEFAULT 'starter',        -- starter / growth / enterprise
+    amount          INTEGER DEFAULT 5000,                 -- ₹5k / ₹12k / ₹25k
+    subscription_start  TIMESTAMPTZ DEFAULT NOW(),
+    subscription_end    TIMESTAMPTZ,
+    subscription_status VARCHAR(20) DEFAULT 'active',    -- active / expired / cancelled
+    payment_status      VARCHAR(20) DEFAULT 'paid',       -- paid / pending / overdue
+    last_payment_date   TIMESTAMPTZ,
+    notes           TEXT,
+    
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

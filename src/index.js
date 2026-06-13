@@ -9,6 +9,8 @@ import webhooksRouter from './routes/webhooks.js';
 import clientsRouter from './routes/clients.js';
 import leadsRouter from './routes/leads.js';
 import dashboardRouter from './routes/dashboard.js';
+import authRouter from './routes/auth.js';
+import adminRouter from './routes/admin.js';
 
 const app = express();
 const PORT = parseInt(process.env.PORT) || 3001;
@@ -52,6 +54,8 @@ app.use('/webhook', webhooksRouter);
 app.use('/clients', clientsRouter);
 app.use('/leads', leadsRouter);
 app.use('/dashboard', dashboardRouter);
+app.use('/auth', authRouter);
+app.use('/admin', adminRouter);
 
 // ============================================================================
 // 404 Handler
