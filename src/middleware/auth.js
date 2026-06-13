@@ -4,8 +4,9 @@
  */
 
 export function authMiddleware(req, res, next) {
-  // Skip auth for webhooks (Twilio calls these)
-  if (req.path.startsWith('/webhook/')) {
+  // Skip auth for public paths
+  const publicPaths = ['/webhook/', '/auth/', '/health'];
+  if (publicPaths.some(p => req.path.startsWith(p))) {
     return next();
   }
 
