@@ -15,6 +15,10 @@ CREATE TABLE IF NOT EXISTS clients (
     industry        VARCHAR(100) NOT NULL DEFAULT 'other',
     qualifying_question TEXT NOT NULL DEFAULT 'What made you interested in our services today?',
     calendly_link   TEXT,
+
+    -- Meta Ads Integration
+    meta_page_id    VARCHAR(255),
+    meta_page_access_token TEXT,
     
     -- Agency management fields
     email           VARCHAR(255),
@@ -48,6 +52,7 @@ CREATE TABLE IF NOT EXISTS leads (
     last_message_at TIMESTAMPTZ,
     appointment_date TIMESTAMPTZ,
     ai_reason       TEXT,
+    meta_leadgen_id VARCHAR(255),
     notes           TEXT,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()

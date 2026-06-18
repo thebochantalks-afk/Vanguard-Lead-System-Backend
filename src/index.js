@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import { authMiddleware } from './middleware/auth.js';
 import { initScheduler } from './services/scheduler.js';
+import { initWorker } from './services/worker.js';
 
 import webhooksRouter from './routes/webhooks.js';
 import clientsRouter from './routes/clients.js';
@@ -27,7 +28,11 @@ app.use(cors({
 }));
 
 // Body parsers
-app.use(express.json());
+app.use(express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
 app.use(express.urlencoded({ extended: true }));
 
 // ============================================================================
@@ -91,8 +96,9 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log('');
 
-  // Initialize the follow-up scheduler
+  // Initialize the follow-up scheduler and worker
   initScheduler();
+  initWorker();
 });
 
 export default app;

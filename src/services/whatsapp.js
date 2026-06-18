@@ -27,37 +27,29 @@ export async function sendMessage(to, body) {
  * Welcome message sent when a new lead comes in.
  */
 export function welcomeMessage(leadName, clientName, qualifyingQuestion) {
-  return `Hey ${leadName}! 👋
+  return `Hi ${leadName}, thank you for reaching out to ${clientName}. We're glad to assist you.
 
-Welcome to ${clientName}! We're super excited to have you here.
+To help us provide the best information, could you please tell us: ${qualifyingQuestion}
 
-Quick question: ${qualifyingQuestion}
-
-Let us know, and we'll get right back to you! 🚀`;
+Looking forward to your reply.`;
 }
 
 /**
  * Follow-up 1 - Sent 24 hours after lead comes in (no reply).
  */
 export function followUp1(leadName) {
-  return `Hey ${leadName}! 👋
+  return `Hi ${leadName}, just following up on our previous message. We'd love to help you with your inquiry.
 
-Just checking in — did you get a chance to see our earlier message? We'd love to help you out.
-
-Got any questions? Feel free to ask! 😊`;
+Do you have any specific questions we can answer for you?`;
 }
 
 /**
  * Follow-up 2 - Sent 72 hours after lead comes in (no reply).
  */
 export function followUp2(leadName) {
-  return `Hi ${leadName}! 😊
+  return `Hi ${leadName}, we haven't heard back yet, but we're still here to help.
 
-We haven't heard from you yet, but we're still here whenever you're ready.
-
-Quick heads up — our offers and availability change frequently, so it's best to lock in a quick chat while we have slots open!
-
-Reply anytime. No pressure! 👍`;
+Just a reminder that our availability can fill up quickly. If you're still interested, we'd love to have a brief chat.`;
 }
 
 /**
@@ -65,28 +57,27 @@ Reply anytime. No pressure! 👍`;
  */
 export function followUp3(leadName, calendlyLink) {
   const link = calendlyLink || 'https://calendly.com/your-link';
-  return `Hey ${leadName}! 🙌
+  return `Hi ${leadName}, this is our final follow-up for now.
 
-This will be our last check-in for now. If you're still interested, here's a link to book a quick call with us:
-
+If you'd like to discuss this further at your convenience, you can book a time that works for you here:
 📅 ${link}
 
-If not, no worries at all — you can always reach out when the time is right.
-
-Wishing you all the best! 🎉`;
+Best regards.`;
 }
 
 /**
  * Alert sent to the client when a lead is tagged HOT.
  */
-export function hotLeadAlert(leadName, leadPhone, lastMessage) {
+export function hotLeadAlert(leadName, leadPhone, lastMessage, aiReason) {
   return `🔥 HOT LEAD ALERT 🔥
 
-Name: ${leadName}
+Lead: ${leadName}
 Phone: ${leadPhone}
 Last message: "${lastMessage}"
 
-Reach out ASAP! This lead is ready to convert! 💪`;
+AI Reason: ${aiReason || 'Identified as high intent.'}
+
+Recommendation: Reach out within 5-10 minutes for maximum conversion! 🚀`;
 }
 
 /**
