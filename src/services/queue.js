@@ -4,9 +4,27 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
-const connection = new IORedis(REDIS_URL, {
+const REDIS_URL = process.env.REDIS_URL;
+
+if (!REDIS_URL) {
+  console.warn('⚠️  REDIS_URL is not set. Falling back to default localhost Redis.');
+}
+
+const redisOptions = {
   maxRetriesPerRequest: null,
+};
+
+// If using SSL (rediss://), we usually need to allow unauthorized certs for managed services like Railway/Upstash
+if (REDIS_URL && REDIS_URL.startsWith('rediss://')) {
+  redisOptions.tls = {
+    rejectUnauthorized: false
+  };
+}
+
+const connection = new IORedis(REDIS_URL || 'redis://127.0.0.1:6379', redisOptions);
+
+connection.on('error', (err) => {
+  console.error('[Redis] Connection Error:', err.message);
 });
 
 export const followUpQueue = new Queue('follow-up-queue', {

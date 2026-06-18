@@ -33,6 +33,7 @@ router.post('/', async (req, res) => {
     endDate.setMonth(endDate.getMonth() + 1); // 1 month subscription
 
     const clientPassword = password || Math.random().toString(36).slice(-8); // random 8 char default
+    const clientEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}@client.com`;
 
     const { data: client, error } = await supabase
       .from('clients')
@@ -43,7 +44,7 @@ router.post('/', async (req, res) => {
         industry: industry || 'other',
         qualifying_question: qualifying_question || 'What made you interested in our services today?',
         calendly_link: calendly_link || null,
-        email: email || null,
+        email: clientEmail,
         password: clientPassword,
         plan: clientPlan,
         amount: planAmount,
@@ -65,7 +66,7 @@ router.post('/', async (req, res) => {
       ...client,
       password: undefined, // Don't send password back
       login_url: `${process.env.FRONTEND_URL || 'https://vanguard-lead-system-frontend.vercel.app'}/login`,
-      login_email: email || `${name.toLowerCase().replace(/\s+/g, '.')}@client.com`,
+      login_email: clientEmail,
       login_password: clientPassword,
     });
   } catch (err) {

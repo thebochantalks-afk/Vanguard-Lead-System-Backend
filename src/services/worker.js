@@ -6,9 +6,26 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
-const connection = new IORedis(REDIS_URL, {
+const REDIS_URL = process.env.REDIS_URL;
+
+if (!REDIS_URL) {
+  console.warn('⚠️  REDIS_URL is not set for worker. Falling back to default localhost Redis.');
+}
+
+const redisOptions = {
   maxRetriesPerRequest: null,
+};
+
+if (REDIS_URL && REDIS_URL.startsWith('rediss://')) {
+  redisOptions.tls = {
+    rejectUnauthorized: false
+  };
+}
+
+const connection = new IORedis(REDIS_URL || 'redis://127.0.0.1:6379', redisOptions);
+
+connection.on('error', (err) => {
+  console.error('[Redis Worker] Connection Error:', err.message);
 });
 
 export function initWorker() {
